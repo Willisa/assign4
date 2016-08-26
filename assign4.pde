@@ -14,7 +14,6 @@ final int Straight  = 1;
 final int Slope     = 2;
 final int Diamond   = 3; 
 
-PImage enemy ;
 PImage fighter ;
 PImage hp ;
 PImage treasure ;
@@ -50,9 +49,9 @@ float enemyX[]=new float[numEnemyX];
 int numEnemyY=6;
 float enemyY[]=new float[numEnemyY];
 
-int numDiamondEnemyX=3;
+int numDiamondEnemyX=9;
 float enemyDiamondX[]=new float[numDiamondEnemyX];
-int numDiamondEnemyY=3;
+int numDiamondEnemyY=9;
 float enemyDiamondY[]=new float[numDiamondEnemyY];
 
 // flame
@@ -75,7 +74,7 @@ PImage [] flame=new PImage [numFlame];
 int count=1;
 int hpState = FULL;
 int gameState ;
-int enemyState = Straight;
+int enemyState;
 
 void setup () {
   // background
@@ -87,10 +86,10 @@ void setup () {
   //  load images
   bg1 = loadImage("img/bg1.png");
   bg2 = loadImage("img/bg2.png");
-  enemy = loadImage("img/enemy.png");
-  fighter = loadImage("img/fighter.png");
-  hp = loadImage("img/hp.png");
-  treasure = loadImage("img/treasure.png");
+  enemy1 = loadImage("img/enemy.png");           
+  fighter = loadImage("img/fighter.png");        
+  hp = loadImage("img/hp.png") ;                 
+  treasure = loadImage("img/treasure.png");      
   end1 = loadImage("img/end1.png");
   end2 = loadImage("img/end2.png");
   start1 = loadImage("img/start1.png");
@@ -249,20 +248,16 @@ void draw() {
       switch(enemyState){
         case Straight:
         
-        enemyX[0]+=speed;
-        
-        for(int i = 1; i < numEnemyX; i++){
-          
-          enemyX[i]=enemyX[0]-80*i;
-          enemyY[i]=enemyY[0];
-        
-        if(crash[i-1]==false){
-        if(fighterX<enemyX[i]+61&&fighterX+51>enemyX[i]&&
-           fighterY+51>enemyY[i]&&fighterY<enemyY[i]+61){
-
-      hpX-=42;       
-      flameX=enemyX[i];
-      flameY=enemyY[i];
+        for(int i=1; i<numEnemyX; i++){  
+      
+    enemyX[i]=enemyX[0]-80*i;
+    enemyY[i]=enemyY[0];
+    if(crash[i-1]==false){
+    if(fighterX<enemyX[i]+61&&fighterX+51>enemyX[i]&&fighterY+51>enemyY[i]&&fighterY<enemyY[i]+61){
+   
+    hpX-=38.8;
+    flameX=enemyX[i];
+    flameY=enemyY[i];
     
      if(frameCount%6==0){
       currentFlame++;
@@ -278,38 +273,43 @@ void draw() {
     }
     
     if(crash[i-1]==false){
-    image(enemy,enemyX[i],enemyY[i]);
+    image(enemy1,enemyX[i],enemyY[i]);
       }  
     }
-        if (enemyX[0] - 5*70 >= width) {
+        if (enemyX[0] - 5*80 >= width) {
           enemyX[0] = -70;
-          enemyY[0] = random(20,140);
+          enemyY[0] = (int)random(20,140);
           
-      crash[0]=false;
-      crash[1]=false;
-      crash[2]=false;
-      crash[3]=false;
-      crash[4]=false;
-      crash[5]=false;
-      crash[6]=false;
-      crash[7]=false;
-      enemyState  = Slope;
-      }
-       
-      break; 
+          enemyState  = Slope; 
+          crash[0]=false;
+          crash[1]=false;
+          crash[2]=false;
+          crash[3]=false;
+          crash[4]=false;
+          crash[5]=false;
+          crash[6]=false;
+          crash[7]=false;
+        
+          } 
+          break; 
       
         case Slope:
-        enemyX[0]+=speed;
-         for(int i = 0; i < numEnemyX ; i++){
-        
-         enemyX[i]+=speed;
-         enemyX[i]=enemyX[0]-70*i;
-         enemyY[i]=enemyY[0]+60*(i-1);
-         
-         if(crash[i+1]==false){
-         if(fighterX<enemyX[i]+60&&fighterX+50>enemyX[i]&&
-            fighterY+50>enemyY[i]&&fighterY<enemyY[i]+60){
-    
+              enemyX[0]+=speed;
+              for(int i=1; i<numEnemyX; i++){   
+              
+              enemyX[i]+=speed;
+              enemyX[i]=enemyX[0]-80*i;
+              
+              enemyY[i]=enemyY[0]+61*(i-1);
+              
+              
+              if(crash[i-1]==false){
+              if(fighterX<enemyX[i]+61&&fighterX+51>enemyX[i]&&
+                 fighterY+51>enemyY[i]&&fighterY<enemyY[i]+61){
+              
+              
+              hpX-=38.8;
+              
               flameX=enemyX[i];
               flameY=enemyY[i];
               enemyX[i]=1000;
@@ -326,15 +326,16 @@ void draw() {
               crash[i-1]=true;
                  }
                }//explode
-              if(crash[i+1]==false){
-              image(enemy,enemyX[i],enemyY[i]); 
-                 }  
+              if(crash[i-1]==false){
+              image(enemy1,enemyX[i],enemyY[i]); 
+            }  
         }
          
-         if(enemyX[0] - 6*70 >= width) {
+         if(enemyX[0] - 6*80 >= width) {
           enemyDiamondX[0]=-80;
           enemyY[0] = random(140,250);
           
+           enemyState=Diamond;
            crash[0]=false;
            crash[1]=false;
            crash[2]=false;
@@ -343,21 +344,43 @@ void draw() {
            crash[5]=false;
            crash[6]=false;
            crash[7]=false;
-           enemyState=Diamond;
           }
            break;
        
        case Diamond:
        enemyDiamondX[0]+=speed;
-       for(int i=0;i<3;i++){
-            image(enemy,enemyX[0]-i*70,enemyY[0]-i*70);
-            image(enemy,enemyX[0]-i*70,enemyY[0]+i*70);
-            image(enemy,enemyX[0]-(4-i)*70,enemyY[0]-i*70);
-            image(enemy,enemyX[0]-(4-i)*70,enemyY[0]+i*70);
-           
-            if(crash[i+1]==false){
+       for(int i=1; i<numDiamondEnemyX; i++){
+         
+          if(i==1||i==8){
+          enemyDiamondX[1]=enemyDiamondX[0];
+          enemyDiamondX[8]=enemyDiamondX[0]-61*4;
+          enemyDiamondY[i]=enemyY[0];
+         
+          }else if(i==2||i==6){
+          enemyDiamondX[2]=enemyDiamondX[0]-61;
+          enemyDiamondX[6]=enemyDiamondX[0]-61*3;
+          enemyDiamondY[i]=enemyY[0]-61;
+        
+          }else if(i==3||i==7){
+          enemyDiamondX[3]=enemyDiamondX[0]-61;
+          enemyDiamondX[7]=enemyDiamondX[0]-61*3;
+          enemyDiamondY[i]=enemyY[0]+61;
+         
+          }else if(i==4){
+          enemyDiamondX[4]=enemyDiamondX[0]-61*2;
+          enemyDiamondY[i]=enemyY[0]-122;
+      
+          }else{
+          enemyDiamondX[i]=enemyDiamondX[0]-61*2;
+          enemyDiamondY[i]=enemyY[0]+122;
+          
+          }
+         
+            if(crash[i-1]==false){
             if(fighterX<enemyDiamondX[i]+61&&fighterX+51>enemyDiamondX[i]&&
                fighterY+51>enemyDiamondY[i]&&fighterY<enemyDiamondY[i]+61){
+                 
+               hpX -=42;  
         
             flameX=enemyDiamondX[i];
             flameY=enemyDiamondY[i];
@@ -372,19 +395,20 @@ void draw() {
            if(currentFlame>5){
            currentFlame =0;
            }
-           crash[i+1]=true;
+           crash[i-1]=true;
             }
           }
-            if(crash[i+1]==false){
-            image(enemy,enemyDiamondX[i],enemyDiamondY[i]);
+            if(crash[i-1]==false){
+            image(enemy1,enemyDiamondX[i],enemyDiamondY[i]);
             }
           }
        
        if(enemyDiamondX[0] - 4*70 >= width) {
-        enemyX[0] = -70;
-        enemyY[0] = random(80,400);
+        enemyDiamondX[0] = -70;
+        enemyDiamondY[0] = random(80,400);
         
         
+        enemyState=Straight;
         crash[0]=false;
         crash[1]=false;
         crash[2]=false;
@@ -392,11 +416,12 @@ void draw() {
         crash[4]=false;
         crash[5]=false;
         crash[6]=false;
-        crash[7]=false;
-        enemyState=Straight;
-        }  
-      }
-      break;
+        crash[7]=false; 
+        } 
+        break;
+       }
+      
+      
       
       case GAME_LOSE:
       image(end2, 0, 0 );
@@ -423,6 +448,7 @@ void draw() {
           fighterY = floor(random(60,420));
           fighterSpeed = 5;
           enemyX[0] = 0;
+          enemyY[0]=random(80,420);
           treasureX = random(60,580);
           treasureY = random(60,420);
           hpX = 42;
@@ -430,7 +456,8 @@ void draw() {
        }
       break;
      }
-  }
+   }
+  
 
 
 void keyPressed(){
